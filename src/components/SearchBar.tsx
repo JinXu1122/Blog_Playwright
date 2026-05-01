@@ -19,6 +19,8 @@ export default function SearchBar() {
     e.preventDefault();
     if (query.trim()) {
       router.push(`/?q=${encodeURIComponent(query.trim())}`);
+    } else {
+      router.push('/');
     }
   };
 

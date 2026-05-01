@@ -22,6 +22,16 @@ export class SearchPage {
     await this.searchButton.click();
   }
 
+  async clearSearch() {
+    await this.searchInput.clear();
+  }
+
+  async getPostCount(): Promise<number> {
+    const response = await this.page.request.get('/api/posts');
+    const posts = await response.json();
+    return posts.length;
+  }
+
   async isNoPostsMessageVisible(): Promise<boolean> {
     return await this.noPostsMessage.isVisible();
   }
