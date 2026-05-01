@@ -45,6 +45,7 @@ export class CreatePostPage {
 
   async createPost(title: string, summary: string, content: string, category?: string) {
     await this.goto();
+    await this.page.pause();
     await this.fillTitle(title);
     await this.fillSummary(summary);
     await this.fillContent(content);

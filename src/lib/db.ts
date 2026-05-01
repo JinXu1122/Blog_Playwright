@@ -70,4 +70,7 @@ export { posts, categories, comments };
 export function clearAllData() {
   sqlite.exec('DELETE FROM comments');
   sqlite.exec('DELETE FROM posts');
+  // Reset autoincrement counters so next record starts from 1
+  sqlite.exec("DELETE FROM sqlite_sequence WHERE name='posts'");
+  sqlite.exec("DELETE FROM sqlite_sequence WHERE name='comments'");
 }

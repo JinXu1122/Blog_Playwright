@@ -10,10 +10,10 @@ export class CategoryPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.allCategory = page.locator('text=All');
-    this.techCategory = page.locator('text=Tech');
-    this.lifeCategory = page.locator('text=Life');
-    this.thoughtsCategory = page.locator('text=Thoughts');
+    this.allCategory = page.getByRole('navigation').getByRole('link', { name: 'All' });
+    this.techCategory = page.getByRole('navigation').getByRole('link', { name: 'Tech' });
+    this.lifeCategory = page.getByRole('navigation').getByRole('link', { name: 'Life' });
+    this.thoughtsCategory = page.getByRole('navigation').getByRole('link', { name: 'Thoughts' });
     this.clearFilterButton = page.locator('text=Clear Filter');
   }
 

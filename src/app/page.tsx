@@ -6,7 +6,7 @@ import HomeContent from './HomeContent';
 function LoadingFallback() {
   return (
     <div className="flex justify-center items-center py-20">
-      <div className="text-gray-500">加载中...</div>
+      <div className="text-gray-500">Loading...</div>
     </div>
   );
 }

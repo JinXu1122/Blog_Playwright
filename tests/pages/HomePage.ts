@@ -23,8 +23,12 @@ export class HomePage {
     await this.page.goto('/', { waitUntil: 'load' });
   }
 
-  async clickWritePost() {
-    await this.writePostButton.click();
+  async clickHeaderWritePost() {
+    await this.writePostButton.first().click();  // the first from the top
+  }
+
+  async clickMainWritePost() {
+    await this.writePostButton.nth(1).click();  // the second from the top
   }
 
   async clickCategory(category: string) {
@@ -44,6 +48,10 @@ export class HomePage {
     return await this.postCards.first().getAttribute('href') || '';
   }
 
+  async clickFirstPost() {
+    await this.postCards.first().click();
+  }
+
   async deletePost(title: string) {
     const deleteButton = this.page.locator(`article:has-text("${title}") button:has-text("Delete")`).first();
     await deleteButton.click();
@@ -52,5 +60,9 @@ export class HomePage {
   async deleteFirstPost() {
     const deleteButton = this.page.locator('article button:has-text("Delete")').first();
     await deleteButton.click();
+  }
+
+  async clickPostByTitle(title: string) {
+    await this.page.locator(`article:has-text("${title}") a[href^="/posts/"]`).click();
   }
 }
