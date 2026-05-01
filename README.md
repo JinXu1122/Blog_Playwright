@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E2E Test Automation - Next.js Blog
 
-## Getting Started
+Playwright-based end-to-end test automation for a Next.js blog application.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Playwright** - E2E testing framework
+- **TypeScript** - Type-safe test code
+- **Page Object Model** - Test design pattern
+
+## Project Structure
+
+```
+blog-proj/
+├── tests/
+│   ├── pages/              # Page Object classes
+│   │   ├── HomePage.ts
+│   │   ├── CreatePostPage.ts
+│   │   ├── SearchPage.ts
+│   │   ├── CategoryPage.ts
+│   │   ├── CommentPage.ts
+│   │   └── PostDetailPage.ts
+│   └── blog-complete.spec.ts  # Test suite
+├── src/
+│   ├── app/               # Next.js app
+│   ├── components/        # React components
+│   └── lib/               # Database & utilities
+└── playwright.config.ts   # Playwright config
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Test Cases
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| ID | Description |
+|----|-------------|
+| TC-001 | Empty blog state |
+| TC-002a/002b | Navigation to create post |
+| TC-003 | Create post with valid inputs |
+| TC-004 | Create post with category |
+| TC-005 | View post detail |
+| TC-006 | Category navigation visible |
+| TC-007/008 | View count behavior |
+| TC-009/010 | Comment functionality |
+| TC-011 | Comment does not affect view count |
+| TC-012/012b/012c | Search functionality |
+| TC-013 | Search with no results |
+| TC-014/015 | Category filtering |
+| TC-016 | Search cleared when switching category |
+| TC-017/017b | Delete post (accept/cancel) |
+| TC-018 | Access non-existent post |
+| TC-019~TC-026 | Performance tests |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Run Tests
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Run all tests
+npx playwright test
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run with UI
+npx playwright test --ui
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run specific project
+npx playwright test --project=chromium
+```
 
-## Deploy on Vercel
+## Test Data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Database cleanup via `POST /api/test/cleanup`
+- Test data seeding via `POST /api/posts`
+- Each test seeds its own data for isolation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Features
+
+- Page Object Model pattern for maintainable test code
+- API-based test data management
+- Smart assertions with regex pattern matching
+- Dialog handling (accept/dismiss)
+- Performance testing with large datasets
+- Multiple browser support (Chromium, Firefox, Safari)
