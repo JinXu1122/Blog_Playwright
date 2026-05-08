@@ -1,4 +1,5 @@
 import { test, expect, request } from '@playwright/test';
+import { assertPostInDb, assertPostNotInDb, assertPostCountInDb } from './db-helper';
 
 // ============================================================
 // API Tests for Posts
@@ -18,7 +19,7 @@ test.describe('Posts API', () => {
     expect(posts).toEqual([]);
   });
 
-  test('POST /api/posts creates a new post', async ({ request }) => {
+  test('POST /api/posts creates a new post and validates in DB', async ({ request }) => {
     const response = await request.post('/api/posts', {
       data: {
         title: 'API Test Post',
@@ -37,6 +38,15 @@ test.describe('Posts API', () => {
     expect(post.content).toBe('API content');
     expect(post.categoryId).toBeNull();
     expect(post.viewCount).toBe(0);
+
+    // SQL assertion: Verify post exists in database with correct data
+    assertPostInDb(post.id, {
+      title: 'API Test Post',
+      summary: 'API summary',
+      content: 'API content',
+      categoryId: null,
+      viewCount: 0,
+    });
   });
 
   test('POST /api/posts with category', async ({ request }) => {
@@ -53,6 +63,11 @@ test.describe('Posts API', () => {
 
     const post = await response.json();
     expect(post.categoryId).toBe(1);
+
+    // SQL assertion: Verify category is correctly stored
+    assertPostInDb(post.id, {
+      categoryId: 1,
+    });
   });
 
   test('POST /api/posts missing required fields returns 400', async ({ request }) => {
@@ -83,6 +98,9 @@ test.describe('Posts API', () => {
 
     const posts = await response.json();
     expect(posts).toHaveLength(3);
+
+    // SQL assertion: Verify all posts exist in database
+    assertPostCountInDb(3);
   });
 
   test('GET /api/posts with category filter', async ({ request }) => {
@@ -134,7 +152,7 @@ test.describe('Posts API', () => {
     expect(post.title).toBe('Specific Post');
   });
 
-  test('DELETE /api/posts/:id removes post', async ({ request }) => {
+  test('DELETE /api/posts/:id removes post and validates in DB', async ({ request }) => {
     // Create a post
     const createResponse = await request.post('/api/posts', {
       data: { title: 'To Delete', summary: 'S', content: 'C', categoryId: null }
@@ -145,9 +163,8 @@ test.describe('Posts API', () => {
     const deleteResponse = await request.delete(`/api/posts/${created.id}`);
     expect(deleteResponse.status()).toBe(200);
 
-    // Verify post is deleted
-    const getResponse = await request.get(`/api/posts/${created.id}`);
-    expect(getResponse.status()).toBe(404);
+    // SQL assertion: Verify post is removed from database
+    assertPostNotInDb(created.id);
   });
 
   test('Posts are ordered by createdAt descending', async ({ request }) => {
@@ -156,7 +173,6 @@ test.describe('Posts API', () => {
       data: { title: 'First Post', summary: 'S', content: 'C', categoryId: null }
     })).json();
 
-    // Wait to ensure different timestamps
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const post2 = await (await request.post('/api/posts', {

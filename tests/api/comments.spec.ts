@@ -1,4 +1,5 @@
 import { test, expect, request } from '@playwright/test';
+import { assertCommentInDb, assertCommentNotInDb, assertCommentCountForPost } from './db-helper';
 
 // ============================================================
 // API Tests for Comments
@@ -10,7 +11,7 @@ test.describe('Comments API', () => {
     await request.post('/api/test/cleanup');
   });
 
-  test('POST /api/comments creates a comment', async ({ request }) => {
+  test('POST /api/comments creates a comment and validates in DB', async ({ request }) => {
     // Create a post first
     const postResponse = await request.post('/api/posts', {
       data: {
@@ -37,6 +38,16 @@ test.describe('Comments API', () => {
     expect(comment.authorName).toBe('John');
     expect(comment.content).toBe('Great post!');
     expect(comment.postId).toBe(post.id);
+
+    // SQL assertion: Verify comment exists in database
+    assertCommentInDb(comment.id, {
+      postId: post.id,
+      authorName: 'John',
+      content: 'Great post!',
+    });
+
+    // SQL assertion: Verify comment count for post
+    assertCommentCountForPost(post.id, 1);
   });
 
   test('POST /api/comments missing fields returns 400', async ({ request }) => {
@@ -51,7 +62,7 @@ test.describe('Comments API', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('DELETE /api/comments removes comment', async ({ request }) => {
+  test('DELETE /api/comments removes comment and validates in DB', async ({ request }) => {
     // Create a post and comment
     const postResponse = await request.post('/api/posts', {
       data: {
@@ -78,6 +89,12 @@ test.describe('Comments API', () => {
     });
 
     expect(deleteResponse.status()).toBe(200);
+
+    // SQL assertion: Verify comment is removed from database
+    assertCommentNotInDb(comment.id);
+
+    // SQL assertion: Verify comment count is 0
+    assertCommentCountForPost(post.id, 0);
   });
 
   test('DELETE /api/comments with non-existent id returns 404', async ({ request }) => {
@@ -86,5 +103,32 @@ test.describe('Comments API', () => {
     });
 
     expect(deleteResponse.status()).toBe(404);
+  });
+
+  test('Multiple comments count validated in DB', async ({ request }) => {
+    // Create a post
+    const postResponse = await request.post('/api/posts', {
+      data: {
+        title: 'Post for Multiple Comments',
+        summary: 'Test',
+        content: 'Test content',
+        categoryId: null,
+      }
+    });
+    const post = await postResponse.json();
+
+    // Create 3 comments
+    await request.post('/api/comments', {
+      data: { postId: post.id, authorName: 'User1', content: 'Comment 1' }
+    });
+    await request.post('/api/comments', {
+      data: { postId: post.id, authorName: 'User2', content: 'Comment 2' }
+    });
+    await request.post('/api/comments', {
+      data: { postId: post.id, authorName: 'User3', content: 'Comment 3' }
+    });
+
+    // SQL assertion: Verify all 3 comments exist in database
+    assertCommentCountForPost(post.id, 3);
   });
 });
