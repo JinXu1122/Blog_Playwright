@@ -13,22 +13,45 @@ Playwright-based end-to-end test automation for a Next.js blog application.
 ```
 blog-proj/
 ├── tests/
-│   ├── pages/              # Page Object classes
+│   ├── api/               # API tests
+│   │   ├── posts.spec.ts
+│   │   └── comments.spec.ts
+│   ├── pages/             # Page Object classes
 │   │   ├── HomePage.ts
 │   │   ├── CreatePostPage.ts
 │   │   ├── SearchPage.ts
 │   │   ├── CategoryPage.ts
 │   │   ├── CommentPage.ts
 │   │   └── PostDetailPage.ts
-│   └── blog-complete.spec.ts  # Test suite
+│   └── blog-complete.spec.ts  # E2E test suite
 ├── src/
-│   ├── app/               # Next.js app
-│   ├── components/        # React components
-│   └── lib/               # Database & utilities
+│   ├── app/              # Next.js app
+│   ├── components/       # React components
+│   └── lib/              # Database & utilities
 └── playwright.config.ts   # Playwright config
 ```
 
-## Test Cases
+## Test Cases Summary
+
+| Type | Count |
+|------|-------|
+| API Tests (Posts) | 10 |
+| API Tests (Comments) | 4 |
+| E2E Tests | 26 |
+| **Total** | **40** |
+
+### API Tests
+
+| Test | Description |
+|------|-------------|
+| GET /api/posts | List posts, filter by category, search |
+| POST /api/posts | Create post with/without category |
+| GET /api/posts/:id | Get single post |
+| DELETE /api/posts/:id | Delete post |
+| POST /api/comments | Create comment |
+| DELETE /api/comments | Delete comment |
+
+### E2E Tests (TC-001 ~ TC-026)
 
 | ID | Description |
 |----|-------------|
