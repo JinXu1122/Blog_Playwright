@@ -1,181 +1,181 @@
-# 博客系统功能规格说明书
+# Blog System Feature Specification
 
-## 1. 项目概述
+## 1. Project Overview
 
-- **项目名称**: Next.js 全栈博客系统
-- **技术栈**: Next.js 16 (App Router) + SQLite + Drizzle ORM + Tailwind CSS
-- **项目路径**: `blog-proj/`
-- **数据库**: SQLite (`blog.db`)
-
----
-
-## 2. 数据模型
-
-### 2.1 文章 (posts)
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | INTEGER | 主键，自增 |
-| title | TEXT | 必填，文章标题 |
-| summary | TEXT | 必填，文章摘要 |
-| content | TEXT | 必填，文章正文 |
-| categoryId | INTEGER | 关联分类，可为空 |
-| createdAt | TIMESTAMP | 创建时间，自动生成 |
-| viewCount | INTEGER | 阅读计数，默认 0 |
-
-### 2.2 分类 (categories)
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | INTEGER | 主键，自增 |
-| name | TEXT | 分类名称，唯一 |
-| slug | TEXT | URL 友好的标识，唯一 |
-
-**默认分类**: 技术 (tech)、生活 (life)、随想 (thoughts)
-
-### 2.3 评论 (comments)
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | INTEGER | 主键，自增 |
-| postId | INTEGER | 关联文章 |
-| authorName | TEXT | 评论者姓名 |
-| content | TEXT | 评论内容 |
-| createdAt | TIMESTAMP | 创建时间 |
+- **Project Name**: Next.js Full-Stack Blog System
+- **Tech Stack**: Next.js 16 (App Router) + SQLite + Drizzle ORM + Tailwind CSS
+- **Project Path**: `blog-proj/`
+- **Database**: SQLite (`blog.db`)
 
 ---
 
-## 3. 功能列表
+## 2. Data Model
 
-### 3.1 文章管理
-- [x] **文章列表页** (`/`)
-  - 展示所有文章
-  - 显示标题、摘要、发布日期、分类、阅读数
-  - 支持删除文章
-  - 支持按分类筛选
-  - 支持关键词搜索
+### 2.1 Posts
+| Field | Type | Description |
+|-------|------|-------------|
+| id | INTEGER | Primary key, auto-increment |
+| title | TEXT | Required, post title |
+| summary | TEXT | Required, post summary |
+| content | TEXT | Required, post body |
+| categoryId | INTEGER | Related category, nullable |
+| createdAt | TIMESTAMP | Creation time, auto-generated |
+| viewCount | INTEGER | View count, default 0 |
 
-- [x] **文章详情页** (`/posts/[id]`)
-  - 显示完整文章内容
-  - 显示发布日期、阅读数、分类
-  - 显示评论列表
-  - 支持发表评论
-  - 阅读时自动增加阅读计数
+### 2.2 Categories
+| Field | Type | Description |
+|-------|------|-------------|
+| id | INTEGER | Primary key, auto-increment |
+| name | TEXT | Category name, unique |
+| slug | TEXT | URL-friendly identifier, unique |
 
-- [x] **创建文章页** (`/create`)
-  - 表单填写：标题、摘要、内容、分类
-  - 表单验证
-  - 创建成功后跳转首页
+**Default Categories**: tech, life, thoughts
 
-### 3.2 分类系统
-- [x] **分类系统**
-  - 预设三个分类：技术、生活、随想
-  - 文章可选择一个分类
-  - 支持按分类筛选文章列表
-
-### 3.3 评论系统
-- [x] **发表评论**
-  - 填写姓名和评论内容
-  - 提交后实时更新评论列表
-  - 不触发文章阅读数增加
-
-- [x] **评论列表**
-  - 显示所有评论
-  - 显示评论者姓名、内容、时间
-
-### 3.4 搜索功能
-- [x] **关键词搜索**
-  - 搜索框位于首页顶部导航栏
-  - 按文章标题搜索
-  - 搜索结果页显示「搜索结果: "xxx"」
-  - 点击其他筛选条件时自动清除搜索框文本
+### 2.3 Comments
+| Field | Type | Description |
+|-------|------|-------------|
+| id | INTEGER | Primary key, auto-increment |
+| postId | INTEGER | Related post |
+| authorName | TEXT | Commenter name |
+| content | TEXT | Comment content |
+| createdAt | TIMESTAMP | Creation time |
 
 ---
 
-## 4. API 接口
+## 3. Feature List
 
-### 4.1 文章接口
+### 3.1 Post Management
+- [x] **Post List Page** (`/`)
+  - Display all posts
+  - Show title, summary, publish date, category, view count
+  - Support post deletion
+  - Support category filtering
+  - Support keyword search
 
-| 方法 | 路径 | 说明 | 参数 |
-|------|------|------|------|
-| GET | `/api/posts` | 获取文章列表 | `?q=关键词`, `?category=slug` |
-| POST | `/api/posts` | 创建文章 | `title`, `summary`, `content`, `categoryId` |
-| GET | `/api/posts/[id]` | 获取文章详情 | - |
-| DELETE | `/api/posts/[id]` | 删除文章 | - |
+- [x] **Post Detail Page** (`/posts/[id]`)
+  - Display full post content
+  - Show publish date, view count, category
+  - Display comment list
+  - Support comment submission
+  - Auto-increment view count on visit
 
-### 4.2 其他接口
+- [x] **Create Post Page** (`/create`)
+  - Form fields: title, summary, content, category
+  - Form validation
+  - Redirect to home on success
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/categories` | 获取所有分类 |
-| POST | `/api/comments` | 创建评论 |
+### 3.2 Category System
+- [x] **Category System**
+  - Three preset categories: tech, life, thoughts
+  - Posts can have one category
+  - Support filtering posts by category
+
+### 3.3 Comment System
+- [x] **Post Comment**
+  - Fill in name and comment content
+  - Comments update in real-time
+  - Does not trigger view count increase
+
+- [x] **Comment List**
+  - Display all comments
+  - Show commenter name, content, timestamp
+
+### 3.4 Search Functionality
+- [x] **Keyword Search**
+  - Search box in top navigation bar on home page
+  - Search by post title
+  - Search results page shows "Search results: "xxx""
+  - Search text auto-clears when switching category filters
 
 ---
 
-## 5. 页面路由
+## 4. API Endpoints
 
-| 路径 | 说明 | 渲染方式 |
-|------|------|----------|
-| `/` | 首页，文章列表 | 静态 + 客户端筛选 |
-| `/posts/[id]` | 文章详情页 | 动态渲染 |
-| `/create` | 创建文章页 | 静态渲染 |
+### 4.1 Post Endpoints
+
+| Method | Path | Description | Parameters |
+|--------|------|-------------|------------|
+| GET | `/api/posts` | Get post list | `?q=keyword`, `?category=slug` |
+| POST | `/api/posts` | Create post | `title`, `summary`, `content`, `categoryId` |
+| GET | `/api/posts/[id]` | Get post detail | - |
+| DELETE | `/api/posts/[id]` | Delete post | - |
+
+### 4.2 Other Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/categories` | Get all categories |
+| POST | `/api/comments` | Create comment |
 
 ---
 
-## 6. 组件结构
+## 5. Page Routes
+
+| Path | Description | Rendering |
+|------|-------------|-----------|
+| `/` | Home, post list | Static + client-side filtering |
+| `/posts/[id]` | Post detail page | Dynamic rendering |
+| `/create` | Create post page | Static rendering |
+
+---
+
+## 6. Component Structure
 
 ```
 src/
 ├── app/
-│   ├── page.tsx              # 首页 (Suspense wrapper)
-│   ├── HomeContent.tsx       # 首页内容 (客户端)
-│   ├── layout.tsx            # 根布局
-│   ├── create/page.tsx       # 创建文章页
-│   └── posts/[id]/page.tsx   # 文章详情页
+│   ├── page.tsx              # Home page (Suspense wrapper)
+│   ├── HomeContent.tsx       # Home content (client component)
+│   ├── layout.tsx            # Root layout
+│   ├── create/page.tsx       # Create post page
+│   └── posts/[id]/page.tsx   # Post detail page
 ├── components/
-│   ├── Header.tsx            # 页头 (含导航、搜索框、分类链接)
-│   ├── Footer.tsx            # 页脚
-│   ├── PostCard.tsx          # 文章卡片
-│   ├── PostForm.tsx          # 创建文章表单
-│   ├── SearchBar.tsx         # 搜索框
-│   ├── CommentSection.tsx    # 评论区域
-│   ├── CommentForm.tsx       # 评论表单
-│   └── CommentList.tsx       # 评论列表
+│   ├── Header.tsx            # Header (with navigation, search, category links)
+│   ├── Footer.tsx            # Footer
+│   ├── PostCard.tsx          # Post card
+│   ├── PostForm.tsx          # Create post form
+│   ├── SearchBar.tsx         # Search box
+│   ├── CommentSection.tsx    # Comment section
+│   ├── CommentForm.tsx       # Comment form
+│   └── CommentList.tsx       # Comment list
 └── lib/
-    ├── schema.ts             # 数据库 Schema 定义
-    ├── db.ts                 # 数据库连接与初始化
-    └── posts.ts              # 数据库操作函数
+    ├── schema.ts             # Database schema definition
+    ├── db.ts                 # Database connection and initialization
+    └── posts.ts              # Database operation functions
 ```
 
 ---
 
-## 7. 用户交互流程
+## 7. User Interaction Flows
 
-### 7.1 阅读文章
-1. 用户在首页点击文章标题
-2. 跳转至文章详情页
-3. 阅读数自动 +1
-4. 用户可查看分类、评论
+### 7.1 Reading a Post
+1. User clicks post title on home page
+2. Navigate to post detail page
+3. View count auto-increments by 1
+4. User can view category and comments
 
-### 7.2 发表评论
-1. 用户在文章详情页填写姓名和评论
-2. 点击「发表评论」
-3. 评论立即显示在列表中
-4. **不触发阅读数增加**
+### 7.2 Posting a Comment
+1. User fills in name and comment on post detail page
+2. Click "Submit Comment"
+3. Comment immediately appears in the list
+4. **Does not trigger view count increase**
 
-### 7.3 搜索文章
-1. 用户在搜索框输入关键词
-2. 点击搜索按钮或按回车
-3. 跳转至搜索结果页
-4. 显示匹配标题的文章
+### 7.3 Searching Posts
+1. User enters keyword in search box
+2. Click search button or press Enter
+3. Navigate to search results page
+4. Display posts with matching titles
 
-### 7.4 筛选文章
-1. 用户点击分类链接（技术/生活/随想）
-2. 显示该分类下的所有文章
-3. 搜索框文本自动清除
-4. 点击「清除筛选」返回全部文章
+### 7.4 Filtering Posts
+1. User clicks category link (tech/life/thoughts)
+2. Display all posts in that category
+3. Search box text auto-clears
+4. Click "Clear Filter" to return to all posts
 
-### 7.5 写文章
-1. 用户点击顶部「写文章」按钮
-2. 跳转至创建文章页 `/create`
-3. 填写标题、摘要、内容
-4. （可选）选择一个分类
-5. 点击「发布文章」
-6. 跳转至首页，新文章显示在列表顶部
+### 7.5 Writing a Post
+1. User clicks "Write" button in header
+2. Navigate to create post page `/create`
+3. Fill in title, summary, content
+4. (Optional) Select a category
+5. Click "Publish Post"
+6. Navigate to home page, new post appears at top of list
